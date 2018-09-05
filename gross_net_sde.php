@@ -206,7 +206,7 @@ WHERE A.SDE=B.SDE";
 		
 		while($data = odbc_fetch_array($odbcexec))
 		{
-			 $net_result= ($data['LLONLYPROV']+$data['BBONLYPROV']+$data['PROV'])-($data['LLONLYDIS']+$data['BBONLYDIS']+$data['DIS']);
+			 $net_result= ($data['BBONLYPROV']+$data['PROV'])-($data['LLONLYDIS']+$data['BBONLYDIS']+$data['DIS']);
 			echo "<tr>";
 			echo "<td>" .$sno. "</td>";
 			echo "<td><a href='gross_net_exch.php?sde=" . $data['SDE'] . "&fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH' target='_blank'>" .$data['SDE']. "</a></td>";

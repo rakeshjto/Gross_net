@@ -126,10 +126,8 @@ else if($service=="FTTH") // If the Service is BROADBAND
 		
 		
 	$sql= "SELECT A.EXCHANGE_CODE EXCH,
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) LLONLYPROV,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Broadband Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) BBONLYPROV,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND CUST_ACCNT_NO  IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) PROV,
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND SERVICE_SUB_TYPE='FTTH Voice' AND CUST_ACCNT_NO NOT IN (" . $data4 . "'123') THEN PHONE_NO END)) LLONLYDIS,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND SERVICE_SUB_TYPE='FTTH BroadBand' AND CUST_ACCNT_NO NOT IN (" . $data4 . "'123') THEN PHONE_NO END)) BBONLYDIS,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND CUST_ACCNT_NO  IN (" . $data4 . "'123') THEN PHONE_NO END)) DIS
 FROM EXCHANGE_CODE A,CDR_CRM_ORDERS B 
@@ -145,19 +143,17 @@ GROUP BY A.EXCHANGE_CODE";
 		echo "<tr>";
 		echo "<th rowspan='2'>Sl No</th>";
 		echo "<th rowspan='2'>Exchange</th>";
-		echo "<th colspan='3'>Provisions</th>";
-		echo "<th colspan='3'>Disconnetions</th>";
+		echo "<th colspan='2'>Provisions</th>";
+		echo "<th colspan='2'>Disconnetions</th>";
 		echo "<th rowspan='2'>Net<br>Achievement</th>";
 		echo "</tr>";
-		echo "<tr><th>LL Only</th><th>BB Only</th><th>LL+BB</th>";
-		echo "<th>LL Only</th><th>BB Only</th><th>LL+BB</th></tr>";
+		echo "<tr><th>BB Only</th><th>LL+BB</th>";
+		echo "<th>BB Only</th><th>LL+BB</th></tr>";
 		echo '</thead>';
 		
 		$ftth_tar= 0;
-		$llonlyprov= 0;
 		$bbonlyprov=0;
 		$prov=0;
-		$llonlydis=0;
 		$bbonlydis=0;
 		$dis=0;
 		$net= 0;
@@ -169,20 +165,16 @@ GROUP BY A.EXCHANGE_CODE";
 			echo "<tr>";
 			echo "<td>" .$sno. "</td>";
 			echo "<td>" .$data['EXCH']. "</td>";
-			echo "<td><a href='gross_net_det.php?fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=PROV&order_Sub_type=LL&exch=" .$data['EXCH']. "' target='_blank'>" .$data['LLONLYPROV']. "</a></td>";
 			echo "<td><a href='gross_net_det.php?fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=PROV&order_Sub_type=BB&exch=" .$data['EXCH']. "' target='_blank'>" .$data['BBONLYPROV']. "</a></td>";
 			echo "<td><a href='gross_net_det.php?fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=PROV&order_Sub_type=LLBB&exch=" .$data['EXCH']. "' target='_blank'>" .$data['PROV']. "</a></td>";
-			echo "<td><a href='gross_net_det.php?fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=DIS&order_Sub_type=LL&exch=" .$data['EXCH']. "' target='_blank'>" .$data['LLONLYDIS']. "</a></td>";
 			echo "<td><a href='gross_net_det.php?fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=DIS&order_Sub_type=BB&exch=" .$data['EXCH']. "' target='_blank'>" .$data['BBONLYDIS']. "</a></td>";
 			echo "<td><a href='gross_net_det.php?fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=DIS&order_Sub_type=LLBB&exch=" .$data['EXCH']. "' target='_blank'>" .$data['DIS']. "</a></td>";
 			echo "<td>" .$net_result. "</td>";
 			
 
 			echo "</tr>";
-			$llonlyprov= $llonlyprov + $data['LLONLYPROV']; 
 			$bbonlyprov= $bbonlyprov + $data['BBONLYPROV']; 
 			$prov= $prov+ $data['PROV'];
-			$llonlydis= $llonlydis + $data['LLONLYDIS']; 
 			$bbonlydis= $bbonlydis + $data['BBONLYDIS']; 
 			$dis= $dis + $data['DIS'];
 			$net= $net+ $net_result;
@@ -192,10 +184,8 @@ GROUP BY A.EXCHANGE_CODE";
 		echo '<tfoot>';
 		echo '<tr>';
 		echo "<th colspan='2'> SSA</th>";
-		echo "<th>". $llonlyprov ."</a></th>";
 		echo "<th>". $bbonlyprov ."</a></th>";
 		echo "<th>". $prov ."</a></th>";
-		echo "<th>". $llonlydis ."</a></th>";
 		echo "<th>". $bbonlydis ."</a></th>";
 		echo "<th>". $dis ."</a></th>";
 		echo "<th>". $net ."</a></th>";
