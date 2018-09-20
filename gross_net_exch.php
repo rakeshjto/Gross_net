@@ -118,16 +118,10 @@ else if($service=="FTTH") // If the Service is BROADBAND
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
 		}
 		
-		$sql_duplicate= "SELECT PHONE_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND  TRUNC(ORDER_COMP_DATE) BETWEEN TO_DATE('" . $fdate . "')-30 AND TO_DATE('" . $fdate . "')-1  AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete'";
-		$odbcexecduplicate = odbc_exec($conn,$sql_duplicate);
-	while ($avoid_duplicate = odbc_fetch_array($odbcexecduplicate)){
-			$avoid_duplicate_data .= "'" .$avoid_duplicate[PHONE_NO]. "',";	
-		}
-		
 		
 	$sql= "SELECT A.EXCHANGE_CODE EXCH,
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Broadband Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) BBONLYPROV,
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND CUST_ACCNT_NO  IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) PROV,
+COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Broadband Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') THEN PHONE_NO END)) BBONLYPROV,
+COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND CUST_ACCNT_NO  IN (" . $data2 . "'123') THEN PHONE_NO END)) PROV,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND SERVICE_SUB_TYPE='FTTH BroadBand' AND CUST_ACCNT_NO NOT IN (" . $data4 . "'123') THEN PHONE_NO END)) BBONLYDIS,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND CUST_ACCNT_NO  IN (" . $data4 . "'123') THEN PHONE_NO END)) DIS
 FROM EXCHANGE_CODE A,CDR_CRM_ORDERS B 

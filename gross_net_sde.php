@@ -154,19 +154,12 @@ group by A.SDE,C.BB_TAR ORDER BY SUBSTR(A.SDE,-3)";
 	while ($data3 = odbc_fetch_array($odbcexec3)){
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
 		}
-		//to remove duplicate criteria is find out if the same number was given as new provisions in the last 30 days 
-		$sql_duplicate= "SELECT PHONE_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND  TRUNC(ORDER_COMP_DATE) BETWEEN TO_DATE('" . $fdate . "')-30 AND TO_DATE('" . $fdate . "')-1  AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete'";
-		$odbcexecduplicate = odbc_exec($conn,$sql_duplicate);
-	while ($avoid_duplicate = odbc_fetch_array($odbcexecduplicate)){
-			$avoid_duplicate_data .= "'" .$avoid_duplicate[PHONE_NO]. "',";	
-		}
-		
 		
 		$sql= "SELECT * FROM 
 (SELECT SUBSTR(SDE,-3) SDE,SUM(FTTH_TAR) FTTH_TAR FROM MON_TARGETS_SDE_WISE WHERE  TRUNC(MON_YY) BETWEEN '" .$first_day_of_fdate. "' AND '" .$first_day_of_tdate. "' GROUP BY SUBSTR(SDE,-3)) A,
 		(SELECT SUBSTR(A.SDE,-3) SDE, 
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Broadband Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) BBONLYPROV,
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND CUST_ACCNT_NO  IN (" . $data2 . "'123') AND PHONE_NO NOT IN (" . $avoid_duplicate_data . "'123') THEN PHONE_NO END)) PROV,
+COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Broadband Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') THEN PHONE_NO END)) BBONLYPROV,
+COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND CUST_ACCNT_NO  IN (" . $data2 . "'123') THEN PHONE_NO END)) PROV,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND SERVICE_SUB_TYPE='FTTH BroadBand' AND CUST_ACCNT_NO NOT IN (" . $data4 . "'123') THEN PHONE_NO END)) BBONLYDIS,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND CUST_ACCNT_NO  IN (" . $data4 . "'123') THEN PHONE_NO END)) DIS
 FROM EXCHANGE_CODE A
