@@ -48,7 +48,7 @@ group by A.SDE,C.LL_TAR ORDER BY SUBSTR(A.SDE,-3)";
 		{
 			echo "<tr>";
 			echo "<td>" .$sn. "</a></td>";
-			echo "<td>" .$data['SDE']. "</a></td>";
+			echo "<td><a href='gross_net_exch.php?sde=" . $data['SDE'] . "&fdate= " .$fdate. "&tdate=" .$tdate. "&service=LL' target='_blank'>" .$data['SDE']. "</a></td>";
 			echo "<td>" .$data['LL_TAR']. "</td>";
 			echo "<td><a href='gross_net_det.php?sde=". $data['SDE'] . "&fdate= " .$fdate. "&tdate=" .$tdate. "&service=LL&order_type=LLPROV' target='_blank'>" .$data['LLPROV']. "</a><sub>(" .$data['RC']. ")</sub></td>";
 			echo "<td><a href='gross_net_det.php?sde=". $data['SDE'] . "&fdate= " .$fdate. "&tdate=" .$tdate. "&service=LL&order_type=LLDIS' target='_blank'>" .$data['LLDIS']. "</a></td>";
@@ -111,7 +111,7 @@ group by A.SDE,C.BB_TAR ORDER BY SUBSTR(A.SDE,-3)";
 		{
 			echo "<tr>";
 			echo "<td>" .$sn. "</a></td>";
-			echo "<td>" .$data['SDE']. "</a></td>";
+			echo "<td><a href='gross_net_exch.php?sde=" . $data['SDE'] . "&fdate= " .$fdate. "&tdate=" .$tdate. "&service=BB' target='_blank'>" .$data['SDE']. "</a></td>";
 			echo "<td>" .$data['BB_TAR']. "</td>";
 			echo "<td><a href='gross_net_det.php?sde=". $data['SDE'] . "&fdate=" .$fdate. "&tdate=" .$tdate. "&service=BB&order_type=BBPROV' target='_blank'>" .$data['BBPROV']. "</a></td>";
 			echo "<td><a href='gross_net_det.php?sde=". $data['SDE'] . "&fdate=" .$fdate. "&tdate=" .$tdate. "&service=BB&order_type=BBDIS' target='_blank'>" .$data['BBDIS']. "</a></td>";
@@ -143,13 +143,13 @@ group by A.SDE,C.BB_TAR ORDER BY SUBSTR(A.SDE,-3)";
 
 	case "FTTH": // IF THE SERVICE IS FTTH Broadband ORDER_SUB_TYPE in('VPN Provision','Broadband Provision')
 		//to find out new provisions having both LL & BB		
-		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec1 = odbc_exec($conn,$sql_prov);
 	while ($data1 = odbc_fetch_array($odbcexec1)){
 			$data2 .= "'" .$data1[CUST_ACCNT_NO]. "',";	
 		}
 		//to find out Disconnections having both LL & BB		
-		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec3 = odbc_exec($conn,$sql_dis);
 	while ($data3 = odbc_fetch_array($odbcexec3)){
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
@@ -158,7 +158,7 @@ group by A.SDE,C.BB_TAR ORDER BY SUBSTR(A.SDE,-3)";
 		$sql= "SELECT * FROM 
 (SELECT SUBSTR(SDE,-3) SDE,SUM(FTTH_TAR) FTTH_TAR FROM MON_TARGETS_SDE_WISE WHERE  TRUNC(MON_YY) BETWEEN '" .$first_day_of_fdate. "' AND '" .$first_day_of_tdate. "' GROUP BY SUBSTR(SDE,-3)) A,
 		(SELECT SUBSTR(A.SDE,-3) SDE, 
-COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE='Broadband Provision' AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') THEN PHONE_NO END)) BBONLYPROV,
+COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision') AND CUST_ACCNT_NO NOT IN (" . $data2 . "'123') THEN PHONE_NO END)) BBONLYPROV,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='New' AND CUST_ACCNT_NO  IN (" . $data2 . "'123') THEN PHONE_NO END)) PROV,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND SERVICE_SUB_TYPE='FTTH BroadBand' AND CUST_ACCNT_NO NOT IN (" . $data4 . "'123') THEN PHONE_NO END)) BBONLYDIS,
 COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND CUST_ACCNT_NO  IN (" . $data4 . "'123') THEN PHONE_NO END)) DIS
@@ -166,7 +166,7 @@ FROM EXCHANGE_CODE A
 LEFT JOIN CDR_CRM_ORDERS B  ON 
 A.EXCHANGE_CODE=B.EXCHANGE_CODE 
 AND TRUNC(B.ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "'
-AND B.SERVICE_TYPE LIKE '%FTTH%' 
+AND B.SERVICE_TYPE LIKE '%Bharat Fiber%' 
 AND b.ORDER_STATUS='Complete'
 GROUP BY SUBSTR(A.SDE,-3))B
 WHERE A.SDE=B.SDE";
@@ -225,10 +225,10 @@ WHERE A.SDE=B.SDE";
 		echo '<tr>';
 		echo "<th colspan='2'> SSA</th>";
 		echo "<th>". $ftth_tar ."</a></th>";
-		echo "<th>". $bbonlyprov ."</a></th>";
-		echo "<th>". $prov ."</a></th>";
-		echo "<th>". $bbonlydis ."</a></th>";
-		echo "<th>". $dis ."</a></th>";
+		echo "<th><a href='gross_net_det.php?sde=SSA&fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=PROV&order_Sub_type=BB&sdca=SSA' target='_blank'>". $bbonlyprov ."</a></th>";
+		echo "<th><a href='gross_net_det.php?sde=SSA&fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=PROV&order_Sub_type=LLBB&sdca=SSA' target='_blank'>". $prov ."</a></th>";
+		echo "<th><a href='gross_net_det.php?sde=SSA&fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=DIS&order_Sub_type=BB&sdca=SSA' target='_blank'>". $bbonlydis ."</a></th>";
+		echo "<th><a href='gross_net_det.php?sde=SSA&fdate=" .$fdate. "&tdate=" .$tdate. "&service=FTTH&order_type=DIS&order_Sub_type=LLBB&sdca=SSA' target='_blank'>". $dis ."</a></th>";
 		echo "<th>". $net ."</a></th>";
 		echo '</tr>';
 		echo '</tfoot>';
@@ -270,9 +270,9 @@ WHERE A.SDE=B.SDE";
 
 	case "NGN": // IF THE SERVICE IS LFMT
 		$sql= "SELECT A.service_sub_type,NVL(B.PROV,0) PROV,NVL(B.DIS,0) DIS,NVL((B.PROV-B.DIS),0) NET, C.WKG FROM
-(SELECT DISTINCT service_sub_type  from CDR_CRM_ORDERS WHERE service_type IN ('FMT','MMVC Postpaid')) A,
-(select service_sub_type,COUNT(CASE WHEN ORDER_TYPE='New' THEN 1 END) PROV,COUNT(CASE WHEN ORDER_TYPE='Disconnect' THEN 1 END) DIS FROM CDR_CRM_ORDERS WHERE  TRUNC(ORDER_COMP_DATE)  BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND ORDER_STATUS='Complete' AND service_type IN ('FMT','MMVC Postpaid') GROUP BY  service_sub_type) B,
-(SELECT service_sub_type,COUNT(DISTINCT PHONE_NO) WKG FROM CDRHYD_WORKING_LINES WHERE service_type IN ('FMT','MMVC Postpaid') and SERVICE_STATUS='Active' group by service_sub_type) C
+(SELECT DISTINCT service_sub_type  from CDR_CRM_ORDERS WHERE service_type IN ('FMT','MMVC Postpaid','WINGS')) A,
+(select service_sub_type,COUNT(CASE WHEN ORDER_TYPE='New' THEN 1 END) PROV,COUNT(CASE WHEN ORDER_TYPE='Disconnect' THEN 1 END) DIS FROM CDR_CRM_ORDERS WHERE  TRUNC(ORDER_COMP_DATE)  BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND ORDER_STATUS='Complete' AND service_type IN ('FMT','MMVC Postpaid','WINGS') GROUP BY  service_sub_type) B,
+(SELECT service_sub_type,COUNT(DISTINCT PHONE_NO) WKG FROM CDRHYD_WORKING_LINES WHERE service_type IN ('FMT','MMVC Postpaid','WINGS') and SERVICE_STATUS='Active' group by service_sub_type) C
 WHERE A.service_sub_type=B.service_sub_type(+) AND A.service_sub_type=C.service_sub_type(+)";
 		//ECHO $sql;
 		$odbcexec = odbc_exec($conn,$sql);

@@ -2,15 +2,6 @@
 include('head.html');
 $conn = odbc_connect("reports","reports","reports123");
  $sde=$_REQUEST['sde']; 
- /*switch ($stn) 
-			{
-				case "NVL":
-					$stations="'NVL','PLV'";
-				 break;
-				default:
-					$stations="'" .$stn . "'";
-			}
-			*/
  $fdate=$_REQUEST['fdate'];
  $tdate=$_REQUEST['tdate'];
  $service=$_REQUEST['service'];
@@ -106,13 +97,13 @@ else if($service=="FTTH") // If the Service is BROADBAND
 	echo "<h3 style='text-align: center;color: blue'>FTTH Gross and Net from" . $fdate ." to " . $tdate . " under " . $sde . "</h3><br>";
         
 		
-		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec1 = odbc_exec($conn,$sql_prov);
 	while ($data1 = odbc_fetch_array($odbcexec1)){
 			$data2 .= "'" .$data1[CUST_ACCNT_NO]. "',";	
 		}
 		
-		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec3 = odbc_exec($conn,$sql_dis);
 	while ($data3 = odbc_fetch_array($odbcexec3)){
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
@@ -127,7 +118,7 @@ COUNT(DISTINCT (CASE WHEN ORDER_TYPE='Disconnect' AND CUST_ACCNT_NO  IN (" . $da
 FROM EXCHANGE_CODE A,CDR_CRM_ORDERS B 
 WHERE A.EXCHANGE_CODE=B.EXCHANGE_CODE(+) 
 AND TRUNC(B.ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "'
-AND B.SERVICE_TYPE LIKE '%FTTH%' 
+AND B.SERVICE_TYPE LIKE '%Bharat Fiber%' 
 AND b.ORDER_STATUS='Complete'
 AND substr(A.SDE,-3)='" . $sde ."'
 GROUP BY A.EXCHANGE_CODE";
