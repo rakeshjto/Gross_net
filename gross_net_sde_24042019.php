@@ -143,13 +143,13 @@ group by A.SDE,C.BB_TAR ORDER BY SUBSTR(A.SDE,-3)";
 
 	case "FTTH": // IF THE SERVICE IS FTTH Broadband ORDER_SUB_TYPE in('VPN Provision','Broadband Provision')
 		//to find out new provisions having both LL & BB		
-		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec1 = odbc_exec($conn,$sql_prov);
 	while ($data1 = odbc_fetch_array($odbcexec1)){
 			$data2 .= "'" .$data1[CUST_ACCNT_NO]. "',";	
 		}
 		//to find out Disconnections having both LL & BB		
-		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec3 = odbc_exec($conn,$sql_dis);
 	while ($data3 = odbc_fetch_array($odbcexec3)){
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
@@ -166,7 +166,7 @@ FROM EXCHANGE_CODE A
 LEFT JOIN CDR_CRM_ORDERS B  ON 
 A.EXCHANGE_CODE=B.EXCHANGE_CODE 
 AND TRUNC(B.ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "'
-AND B.SERVICE_TYPE LIKE '%FTTH%' 
+AND B.SERVICE_TYPE LIKE '%Bharat Fiber%' 
 AND b.ORDER_STATUS='Complete'
 GROUP BY SUBSTR(A.SDE,-3))B
 WHERE A.SDE=B.SDE";

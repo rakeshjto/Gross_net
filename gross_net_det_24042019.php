@@ -207,13 +207,13 @@ if (isset($_REQUEST['sde']))  // If this page is arrived from gross_net_ssa.php
 	// If the Service is FTTH
 	else if($service=="FTTH") 
 	{
-		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec1 = odbc_exec($conn,$sql_prov);
 	while ($data1 = odbc_fetch_array($odbcexec1)){
 			$data2 .= "'" .$data1[CUST_ACCNT_NO]. "',";	
 		}
 		
-		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec3 = odbc_exec($conn,$sql_dis);
 	while ($data3 = odbc_fetch_array($odbcexec3)){
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
@@ -234,12 +234,14 @@ if (isset($_REQUEST['sde']))  // If this page is arrived from gross_net_ssa.php
 					$querystring1 = " ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision') AND ";
 					$customerids=$data2;
 					 $plan_component= "Add";
-					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					//$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 					}
 				elseif($_REQUEST['order_type']=="DIS"){
 					$heading= "Only LL FTTH Disconnetions between ". $fdate . " and " .$tdate . "under ".$_REQUEST['sdca']. " Station";
 					$order_type = "ORDER_TYPE='Disconnect' AND ";
-					$querystring1 = "  SERVICE_SUB_TYPE='FTTH Voice' AND ";
+					//$querystring1 = "  SERVICE_SUB_TYPE='FTTH Voice' AND ";
+					$querystring1 = "  SERVICE_SUB_TYPE in('FTTH Voice','Bharat Fiber Voice') AND ";
 					$customerids=$data4;
 					$plan_component= "Delete";
 					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
@@ -253,15 +255,18 @@ if (isset($_REQUEST['sde']))  // If this page is arrived from gross_net_ssa.php
 					$querystring1 = " ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision') AND ";
 					$customerids=$data2;
 					$plan_component= "Add";
-					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					//$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 					}
 				elseif($_REQUEST['order_type']=="DIS"){
 					$heading= "Only BB FTTH Disconnetions between ". $fdate . " and " .$tdate . "under ".$_REQUEST['sdca']. " Station";
 					$order_type = "ORDER_TYPE='Disconnect' AND ";
-					$querystring1 = " SERVICE_SUB_TYPE='FTTH BroadBand' AND ";
+					//$querystring1 = " SERVICE_SUB_TYPE ='FTTH BroadBand' AND ";
+					$querystring1 = " SERVICE_SUB_TYPE in('FTTH BroadBand','Bharat Fiber BB') AND ";
 					$customerids=$data4;
 					$plan_component= "Delete";
-					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					//$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 					}
 				$querystring2 = " NOT IN ";
 				break;
@@ -271,7 +276,8 @@ if (isset($_REQUEST['sde']))  // If this page is arrived from gross_net_ssa.php
 				$order_type = " ORDER_TYPE='New' AND ";
 				$querystring1 = "";$customerids=$data2;
 				$plan_component= "Add";
-				$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+				//$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+				$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 				}
 				elseif($_REQUEST['order_type']=="DIS"){
 				$heading= "FTTH Disconnetions (LL & BB) between ". $fdate . " and " .$tdate . "under ".$_REQUEST['sdca']. " Station";
@@ -279,14 +285,15 @@ if (isset($_REQUEST['sde']))  // If this page is arrived from gross_net_ssa.php
 				$querystring1 = "";
 				$customerids=$data4;
 				$plan_component= "Delete";
-				$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+				//$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+				$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 				}
 				$querystring2 = " IN ";
 				break;		
 		}
 		
 		$sql="SELECT EXCHANGE_CODE,MOBILE_NO,PHONE_NO, A.ORDER_NO,TO_CHAR(ORDER_CREATED_DATE,'YYYY-MM-DD') ORDER_CREATED_DATE, TO_CHAR(ORDER_COMP_DATE,'YYYY-MM-DD') ORDER_COMP_DATE,ORDER_TYPE, ORDER_SUB_TYPE, ORDER_STATUS,
-					SERVICE_SUB_TYPE,CUSTOMER_NAME,BILL_ACCNT_TYPE, BILL_ACCNT_SUB_TYPE,HOUSE_NO,VILLAGE_NAME,ADDITIONAL_DETAILS , MOBILE_NO,RECONNECTION_ORDER,B.PRODUCT_NAME  FROM CDR_CRM_ORDERS A, ORDER_ITEMS B WHERE A.ORDER_NO=B.ORDER_NO AND ". $order_type . " ". $querystring1 . "  TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' AND CUST_ACCNT_NO ". $querystring2 . " (" . $customerids . "'123') " .$olt_string . "  AND B.PROD_CATG_CD in " .$product_cat. " AND B.PRODUCT_STATUS='" .$plan_component. "' ORDER BY PHONE_NO";
+					SERVICE_SUB_TYPE,CUSTOMER_NAME,BILL_ACCNT_TYPE, BILL_ACCNT_SUB_TYPE,HOUSE_NO,VILLAGE_NAME,ADDITIONAL_DETAILS , MOBILE_NO,RECONNECTION_ORDER,B.PRODUCT_NAME  FROM CDR_CRM_ORDERS A, ORDER_ITEMS B WHERE A.ORDER_NO=B.ORDER_NO AND ". $order_type . " ". $querystring1 . "  TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' AND CUST_ACCNT_NO ". $querystring2 . " (" . $customerids . "'123') " .$olt_string . "  AND B.PROD_CATG_CD in " .$product_cat. " AND B.PRODUCT_STATUS='" .$plan_component. "' ORDER BY PHONE_NO";
 		
 		//$sql="SELECT EXCHANGE_CODE,MOBILE_NO,PHONE_NO, A.ORDER_NO,TO_CHAR(ORDER_CREATED_DATE,'YYYY-MM-DD') ORDER_CREATED_DATE, TO_CHAR(ORDER_COMP_DATE,'YYYY-MM-DD') ORDER_COMP_DATE,ORDER_TYPE, ORDER_SUB_TYPE, ORDER_STATUS,
 					//SERVICE_SUB_TYPE,CUSTOMER_NAME,BILL_ACCNT_TYPE, BILL_ACCNT_SUB_TYPE,HOUSE_NO,VILLAGE_NAME,ADDITIONAL_DETAILS , MOBILE_NO,RECONNECTION_ORDER,B.PRODUCT_NAME  FROM CDR_CRM_ORDERS A, ORDER_ITEMS B WHERE A.ORDER_NO=B.ORDER_NO AND ". $order_type . " ". $querystring1 . "  TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' AND CUST_ACCNT_NO ". $querystring2 . " (" . $customerids . "'123') AND A.EXCHANGE_CODE in(SELECT EXCHANGE_CODE FROM EXCHANGE_CODE WHERE SUBSTR(SDE,-3)='".$_REQUEST['sdca']."')   AND B.PROD_CATG_CD in " .$product_cat. " AND B.PRODUCT_STATUS='" .$plan_component. "'";
@@ -452,13 +459,13 @@ else if(isset($_REQUEST['exch'])) // If this page is arrived from gross_net_exch
 	else if($service=="FTTH")
 	{
 		
-		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_prov= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='New' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec1 = odbc_exec($conn,$sql_prov);
 	 while ($data1 = odbc_fetch_array($odbcexec1)){
 			$data2 .= "'" .$data1[CUST_ACCNT_NO]. "',";	
 		}
 		
-		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
+		$sql_dis= "SELECT CUST_ACCNT_NO FROM CDR_CRM_ORDERS WHERE ORDER_TYPE='Disconnect' AND TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' GROUP BY CUST_ACCNT_NO HAVING COUNT(*)=2";
 		$odbcexec3 = odbc_exec($conn,$sql_dis);
 	 while ($data3 = odbc_fetch_array($odbcexec3)){
 			$data4 .= "'" .$data3[CUST_ACCNT_NO]. "',";	
@@ -470,14 +477,15 @@ else if(isset($_REQUEST['exch'])) // If this page is arrived from gross_net_exch
 				if($_REQUEST['order_type']=="PROV"){
 					$heading= "Only LL FTTH Provsions between ". $fdate . " and " .$tdate . "";
 					$order_type = " ORDER_TYPE='New' AND ";
-					$querystring1 = " ORDER_SUB_TYPE IN ('Broadband Provision',ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision')) AND ";$customerids=$data2;
-					 $plan_component= "Add";
-					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					$querystring1 = " ORDER_SUB_TYPE IN ('Broadband Provision',ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision')) AND ";
+					$customerids=$data2;
+					$plan_component= "Add";
+					$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 					}
 				elseif($_REQUEST['order_type']=="DIS"){
 					$heading= "Only LL FTTH Disconnetions between ". $fdate . " and " .$tdate . "";
 					$order_type = "ORDER_TYPE='Disconnect' AND ";
-					$querystring1 = "  SERVICE_SUB_TYPE='FTTH Voice' AND ";
+					$querystring1 = "  SERVICE_SUB_TYPE in('FTTH Voice','Bharat Fiber Voice') AND ";
 					$customerids=$data4;
 					$plan_component= "Delete";
 					$product_cat = "ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision')";
@@ -491,15 +499,15 @@ else if(isset($_REQUEST['exch'])) // If this page is arrived from gross_net_exch
 					$querystring1 = " ORDER_SUB_TYPE IN ('Broadband Provision','Broadband VPN Provision') AND ";
 					$customerids=$data2;
 					$plan_component= "Add";
-					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 					}
 				elseif($_REQUEST['order_type']=="DIS"){
 					$heading= "Only BB FTTH Disconnetions between ". $fdate . " and " .$tdate . "";
 					$order_type = "ORDER_TYPE='Disconnect' AND ";
-					$querystring1 = " SERVICE_SUB_TYPE='FTTH BroadBand' AND ";
+					$querystring1 = " SERVICE_SUB_TYPE in('FTTH BroadBand','Bharat Fiber BB') AND ";
 					$customerids=$data4;
 					$plan_component= "Delete";
-					$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+					$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 					}
 				$querystring2 = " NOT IN ";
 				break;
@@ -509,21 +517,21 @@ else if(isset($_REQUEST['exch'])) // If this page is arrived from gross_net_exch
 				$order_type = " ORDER_TYPE='New' AND ";
 				$querystring1 = "";$customerids=$data2;
 				$plan_component= "Add";
-				$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+				$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 				}
 				elseif($_REQUEST['order_type']=="DIS"){
 				$heading= "FTTH Disconnetions (LL & BB) between ". $fdate . " and " .$tdate . "";
 				$order_type = " ORDER_TYPE='Disconnect' AND ";
 				$querystring1 = "";$customerids=$data4;
 				$plan_component= "Delete";
-				$product_cat = "('FTTH Combo Plan','FTTH BB Plans','Plan','VPN Plan')";
+				$product_cat = "('Bharat Fiber Combo Plan','Bharat Fiber BB Plans','Plan','VPN Plan')";
 				}
 				$querystring2 = " IN ";
 				break;		
 		}
 		
 		$sql="SELECT EXCHANGE_CODE,MOBILE_NO,PHONE_NO, A.ORDER_NO,TO_CHAR(ORDER_CREATED_DATE,'YYYY-MM-DD') ORDER_CREATED_DATE, TO_CHAR(ORDER_COMP_DATE,'YYYY-MM-DD') ORDER_COMP_DATE,ORDER_TYPE, ORDER_SUB_TYPE, ORDER_STATUS,
-					SERVICE_SUB_TYPE,CUSTOMER_NAME,BILL_ACCNT_TYPE, BILL_ACCNT_SUB_TYPE,HOUSE_NO,VILLAGE_NAME,ADDITIONAL_DETAILS , MOBILE_NO,RECONNECTION_ORDER,B.PRODUCT_NAME  FROM CDR_CRM_ORDERS A, ORDER_ITEMS B WHERE A.ORDER_NO=B.ORDER_NO AND ". $order_type . " ". $querystring1 . "  TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%FTTH%' AND ORDER_STATUS='Complete' AND CUST_ACCNT_NO ". $querystring2 . " (" . $customerids . "'123') AND A.EXCHANGE_CODE ='".$_REQUEST['exch']."'   AND B.PROD_CATG_CD in " .$product_cat. " AND B.PRODUCT_STATUS='" .$plan_component. "'";
+					SERVICE_SUB_TYPE,CUSTOMER_NAME,BILL_ACCNT_TYPE, BILL_ACCNT_SUB_TYPE,HOUSE_NO,VILLAGE_NAME,ADDITIONAL_DETAILS , MOBILE_NO,RECONNECTION_ORDER,B.PRODUCT_NAME  FROM CDR_CRM_ORDERS A, ORDER_ITEMS B WHERE A.ORDER_NO=B.ORDER_NO AND ". $order_type . " ". $querystring1 . "  TRUNC(ORDER_COMP_DATE) BETWEEN '" . $fdate . "' AND '" . $tdate . "' AND SERVICE_TYPE LIKE '%Bharat Fiber%' AND ORDER_STATUS='Complete' AND CUST_ACCNT_NO ". $querystring2 . " (" . $customerids . "'123') AND A.EXCHANGE_CODE ='".$_REQUEST['exch']."'   AND B.PROD_CATG_CD in " .$product_cat. " AND B.PRODUCT_STATUS='" .$plan_component. "'";
 	}
 }
 
